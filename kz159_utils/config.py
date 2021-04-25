@@ -1,3 +1,5 @@
+import contextlib
+from copy import deepcopy
 from os import getenv, chdir
 from os.path import abspath, dirname
 
@@ -29,8 +31,11 @@ class Config:
         return (f'postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@'
                 f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB_NAME}')
 
+    @property  # do we need this?
+    def test_postgres_db(self):
+        return f'{self.POSTGRES_DB_NAME}_test'
 
-class CustomLogger:
-    # try to init logger from here
-    pass
-
+    @contextlib.contextmanager
+    def change_varible(self, key, value):
+        _class = deepcopy(self)
+        setattr(_class, key, value)
