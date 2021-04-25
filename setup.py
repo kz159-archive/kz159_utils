@@ -8,5 +8,5 @@ setup(
     license='MIT',
     author='kz159',
     author_email='me@kz159.ru',
-    description='basic helpers'
+    description=''
 )
