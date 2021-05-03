@@ -2,18 +2,37 @@ import contextlib
 from copy import deepcopy
 from os import getenv, chdir
 from os.path import abspath, dirname
+from dataclasses import replace
+from typing import Optional
+
+from .data import PostgreSqlCredentials
 
 
 class Config:
-    def __init__(self, abs_path, service_name: str = __name__, ):
-        self.try_to_load_dot_env(abs_path)
-        self.SERVICE_NAME = service_name
-        self.POSTGRES_HOST = getenv('POSTGRES_HOST', 'localhost')
-        self.POSTGRES_PASSWORD = getenv('POSTGRES_PASSWORD', 'postgres')
-        self.POSTGRES_PORT = getenv('POSTGRES_PORT', '5432')
-        self.POSTGRES_USER = getenv('POSTGRES_USER', 'postgres')
-        self.POSTGRES_DB_NAME = getenv('POSTGRES_DB_NAME', 'postgres')
+    def __init__(self, abs_path=__file__):
+        self.abs_path = abs_path
+        self.try_to_load_dot_env(self.abs_path)
+        self.SERVICE_NAME = self.get_service_name(self.abs_path)
+
+        self.postgres_creds: Optional[PostgreSqlCredentials] = None
+
         self.LOG_LEVEL = getenv('LOG_LEVEL', 'INFO')
+
+    @property
+    def postgres(self) -> PostgreSqlCredentials:
+        if not self.postgres_creds:
+            raise AttributeError('Init credential first!')
+
+        return self.postgres_creds
+
+    @postgres.setter
+    def postgres(self, value):
+        if type(value) != PostgreSqlCredentials:
+            raise AttributeError('Init credential first!')
+        self.postgres_creds = value
+
+    def init_postgres(self) -> None:
+        self.postgres_creds = PostgreSqlCredentials()
 
     @staticmethod
     def try_to_load_dot_env(abs_path):
@@ -22,23 +41,33 @@ class Config:
             from dotenv import load_dotenv
 
             abs_path = abspath(abs_path)
-            dname = dirname(dirname(abs_path))
-            chdir(dname)
+            dir_name = dirname(dirname(abs_path))
+            chdir(dir_name)
             return load_dotenv('.env')
         except ImportError:
             pass
-        # add here rmq/etc
 
-    @property
-    def postgres_dsn(self):
-        return (f'postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@'
-                f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB_NAME}')
-
-    @property  # do we need this?
-    def test_postgres_db(self):
-        return f'{self.POSTGRES_DB_NAME}_test'
+    @staticmethod
+    def get_service_name(abs_path=__file__):
+        abs_path = abspath(abs_path)
+        dir_name = dirname(dirname(abs_path))
+        return dir_name.split("/")[-1]
 
     @contextlib.contextmanager
-    def change_varible(self, key, value):
-        _class = deepcopy(self)
-        setattr(_class, key, value)
+    def temp_variable(self, key, value):
+        split_keys = key.split('.')
+        if len(split_keys) > 1:
+            cached_class = getattr(self, split_keys[0])
+            d = {split_keys[1]: value}
+            new_dataclass = replace(cached_class, **d)
+            setattr(self, split_keys[0], new_dataclass)
+            yield self
+            self.__setattr__(split_keys[0], cached_class)
+
+        else:
+            _class = deepcopy(self)
+            cached_variable = getattr(_class, key)
+            setattr(self, key, value)
+            yield self
+            self.__setattr__(key, cached_variable)
+
