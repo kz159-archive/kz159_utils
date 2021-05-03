@@ -66,7 +66,7 @@ class Config:
 
         else:
             _class = deepcopy(self)
-            cached_variable = getattr(_class, split_keys[0])
+            cached_variable = getattr(_class, key)
             setattr(self, key, value)
             yield self
             self.__setattr__(key, cached_variable)
