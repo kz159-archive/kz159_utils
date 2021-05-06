@@ -27,17 +27,17 @@ jobs:
     
     - name: Topup version
       run: |
-        python -c
-        'with open('kz159_utils/__init__.py', 'r+') as file:
+        python -c '
+        with open("kz159_utils/__init__.py", "r+") as file:
              lines = file.readlines()
              for num, line in enumerate(lines):
-                 if line.startswith('version'):
+                 if line.startswith("version"):
                      version = line.rsplit()[-1].strip('"')
                      break
              v_split = version.split(".")
              version_num = str(int(v_split[-1]) + 1)
              v_split[-1] = version_num
-             new_version = '.'.join(v_split)'
+             new_version = ".".join(v_split)
              lines[num] = f'version = "{new_version}"'
              file.seek(0)
              file.writelines(lines)'
