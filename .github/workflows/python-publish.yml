@@ -21,7 +21,7 @@ jobs:
         python-version: '3.x'
     
     - name: Topup version
-      run: |
+      run: >
         python -c `
         with open("kz159_utils/__init__.py", "r+") as file:
              lines = file.readlines()
