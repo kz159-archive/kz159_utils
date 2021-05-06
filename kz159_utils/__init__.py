@@ -1,3 +1,3 @@
 from .config import Config
 
-version = "0.0.6"
+version = "0.0.7"
