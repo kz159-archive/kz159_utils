@@ -36,8 +36,11 @@ jobs:
              lines[num] = f'version = "{new_version}"'
              file.seek(0)
              file.writelines(lines)
-         git fetch origin master
-         git push origin HEAD:master
+             
+    - name: Send to git new version
+      run: |
+        git fetch origin master
+        git push origin HEAD:master
     
     - name: Install dependencies
       run: |
