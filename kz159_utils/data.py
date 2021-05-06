@@ -13,7 +13,11 @@ class CredentialClass:
             return
         self._credentials_inited = True
 
-        cls_keys = [i for i in self.__dict__.keys() if not i.startswith('__') and not i.startswith('_')]
+        cls_keys = [
+            i
+            for i in self.__dict__.keys()
+            if not i.startswith("__") and not i.startswith("_")
+        ]
 
         for key in cls_keys:
             env_var = f"{self._name.upper()}_{key.upper()}"
@@ -21,26 +25,29 @@ class CredentialClass:
             if value:
                 setattr(self, key, value)
             else:
-                logging.debug(f"didn't got {env_var} variable, using standard({getattr(self, key)}) one!")
+                logging.debug(
+                    f"didn't got {env_var} variable, using standard({getattr(self, key)}) one!"
+                )
 
         for key, value in kwargs.items():
             setattr(self, key, value)
 
 
 class PostgreSqlCredentials(CredentialClass):
-    _name = 'postgres'
-    host: str = 'localhost'
-    port: str = '5432'
-    password: str = 'postgres'
-    user: str = 'postgres'
-    db_name: str = 'postgres'
+    _name = "postgres"
+    host: str = "localhost"
+    port: str = "5432"
+    password: str = "postgres"
+    user: str = "postgres"
+    db_name: str = "postgres"
 
     @property
     def dsn(self):
-        return (f'postgresql://{self.user}:{self.password}@'
-                f'{self.host}:{self.port}/{self.db_name}')
+        return (
+            f"postgresql://{self.user}:{self.password}@"
+            f"{self.host}:{self.port}/{self.db_name}"
+        )
 
     @property
     def test_db_name(self):
-        return f'{self.db_name}_test'
-
+        return f"{self.db_name}_test"
