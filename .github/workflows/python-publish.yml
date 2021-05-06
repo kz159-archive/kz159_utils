@@ -19,12 +19,31 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
-
+    
+    - name: Topup version
+      run: |
+        python -c
+        'with open('kz159_utils/__init__.py', 'r+') as file:
+             lines = file.readlines()
+             for num, line in enumerate(lines):
+                 if line.startswith('version'):
+                     version = line.rsplit()[-1].strip('"')
+                     break
+             v_split = version.split(".")
+             version_num = str(int(v_split[-1]) + 1)
+             v_split[-1] = version_num
+             new_version = '.'.join(v_split)'
+             lines[num] = f'version = "{new_version}"'
+             file.seek(0)
+             file.writelines(lines)'
+         git fetch origin master
+         git push origin HEAD:master
+    
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
