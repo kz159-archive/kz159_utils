@@ -21,8 +21,8 @@ jobs:
         python-version: '3.x'
     
     - name: Topup version
-      run: >
-        python -c '
+      shell: python
+      run: |
         with open("kz159_utils/__init__.py", "r+") as file:
              lines = file.readlines()
              for num, line in enumerate(lines):
@@ -35,7 +35,7 @@ jobs:
              new_version = ".".join(v_split)
              lines[num] = f'version = "{new_version}"'
              file.seek(0)
-             file.writelines(lines)'
+             file.writelines(lines)
          git fetch origin master
          git push origin HEAD:master
     
