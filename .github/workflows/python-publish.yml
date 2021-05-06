@@ -40,7 +40,10 @@ jobs:
              
     - name: Send to git new version
       run: |
-        git fetch origin main
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "159+github-actions[bot]@users.noreply.github.com"
+        git add -A
+        git commit -m "Topup version"
         git push origin HEAD:main
     
     - name: Install dependencies
