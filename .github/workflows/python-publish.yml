@@ -30,6 +30,7 @@ jobs:
                      version = line.rsplit()[-1].strip('"')
                      break
              v_split = version.split(".")
+             print(v_split)
              version_num = str(int(v_split[-1]) + 1)
              v_split[-1] = version_num
              new_version = ".".join(v_split)
