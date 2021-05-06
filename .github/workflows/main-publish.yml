@@ -40,9 +40,10 @@ jobs:
              
     - name: Send to git new version
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "159+github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "kz159"
+        git config --global user.email "loh@kz159.ru"
         git add -A
+        git fetch origin main
         git commit -m "Topup version"
         git push origin HEAD:main
     
