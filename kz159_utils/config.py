@@ -1,8 +1,8 @@
 import contextlib
 from copy import deepcopy
-from os import getenv, chdir
-from os.path import abspath, dirname
 from dataclasses import replace
+from os import chdir, getenv
+from os.path import abspath, dirname
 from typing import Optional
 
 from .data import PostgreSqlCredentials
@@ -16,19 +16,19 @@ class Config:
 
         self.postgres_creds: Optional[PostgreSqlCredentials] = None
 
-        self.LOG_LEVEL = getenv('LOG_LEVEL', 'INFO')
+        self.LOG_LEVEL = getenv("LOG_LEVEL", "INFO")
 
     @property
     def postgres(self) -> PostgreSqlCredentials:
         if not self.postgres_creds:
-            raise AttributeError('Init credential first!')
+            raise AttributeError("Init credential first!")
 
         return self.postgres_creds
 
     @postgres.setter
     def postgres(self, value):
         if type(value) != PostgreSqlCredentials:
-            raise AttributeError('Init credential first!')
+            raise AttributeError("Init credential first!")
         self.postgres_creds = value
 
     def init_postgres(self) -> None:
@@ -43,7 +43,7 @@ class Config:
             abs_path = abspath(abs_path)
             dir_name = dirname(dirname(abs_path))
             chdir(dir_name)
-            return load_dotenv('.env')
+            return load_dotenv(".env")
         except ImportError:
             pass
 
@@ -55,7 +55,7 @@ class Config:
 
     @contextlib.contextmanager
     def temp_variable(self, key, value):
-        split_keys = key.split('.')
+        split_keys = key.split(".")
         if len(split_keys) > 1:
             cached_class = getattr(self, split_keys[0])
             d = {split_keys[1]: value}
@@ -70,4 +70,3 @@ class Config:
             setattr(self, key, value)
             yield self
             self.__setattr__(key, cached_variable)
-
