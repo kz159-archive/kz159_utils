@@ -1,4 +1,5 @@
 from setuptools import setup
+
 from kz159_utils import version
 
 setup(

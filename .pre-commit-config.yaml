@@ -8,3 +8,19 @@ repos:
    - id: mypy
      name: mypy
      entry: mypy --config-file kz159_utils/setup.cfg
+
+-  repo: https://github.com/pycqa/isort
+   rev: 5.8.0
+   hooks:
+   - id: isort
+     name: isort (python)
+
+-   repo: https://github.com/pycqa/flake8
+    rev: 3.9.2  # pick a git hash / tag to point to
+    hooks:
+    -   id: flake8
+        args: # arguments to configure flake8
+            - "--max-line-length=119"
+            - "--max-complexity=18"
+            - "--select=B,C,E,F,W,T4,B9"
+
