@@ -1,3 +1,9 @@
+from logging import getLogger
+
+
 class CustomLogger:
-    # try to init logger from here
-    pass
+    def __init__(self, root):
+        self._root = root
+
+    def ll(self):
+        pass
