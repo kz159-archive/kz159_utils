@@ -1,15 +1,21 @@
 import contextlib
 from copy import deepcopy
 from dataclasses import replace
+from logging import getLogger
 from os import chdir, getenv
 from os.path import abspath, dirname
 from typing import Optional
 
 from .data import PostgreSqlCredentials
 
+__all__ = ['config', 'Config']
+
+log = getLogger(__name__)
+
 
 class Config:
     def __init__(self, abs_path=__file__):
+
         self.abs_path = abs_path
         self.try_to_load_dot_env(self.abs_path)
         self.SERVICE_NAME = self.get_service_name(self.abs_path)
@@ -70,3 +76,6 @@ class Config:
             setattr(self, key, value)
             yield self
             self.__setattr__(key, cached_variable)
+
+
+config = Config()

@@ -26,7 +26,8 @@ class CredentialClass:
                 setattr(self, key, value)
             else:
                 logging.debug(
-                    f"didn't got {env_var} variable, using standard({getattr(self, key)}) one!"
+                    f"didn't got {env_var} variable, "
+                    f"using standard({getattr(self, key)}) one!"
                 )
 
         for key, value in kwargs.items():
