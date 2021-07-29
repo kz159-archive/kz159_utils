@@ -8,14 +8,14 @@ from typing import Optional
 
 from .data import PostgreSqlCredentials
 
-__all__ = ['config', 'Config']
-
 log = getLogger(__name__)
+
+__all__ = ['config', 'Config']
 
 
 class Config:
     def __init__(self, abs_path=__file__):
-
+        log.warning('This class is deprecated use pydantic instead')
         self.abs_path = abs_path
         self.try_to_load_dot_env(self.abs_path)
         self.SERVICE_NAME = self.get_service_name(self.abs_path)
